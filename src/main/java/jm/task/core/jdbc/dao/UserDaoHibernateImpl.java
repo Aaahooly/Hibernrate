@@ -5,7 +5,6 @@ import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.*;
 import org.hibernate.query.NativeQuery;
-
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class UserDaoHibernateImpl implements UserDao {
         session = sessionFactory.getCurrentSession();
         try {
             session.beginTransaction();
-            NativeQuery sqlQuery = session.createNativeQuery("DROP TABLE IF EXISTS user",User.class);
+            NativeQuery sqlQuery = session.createNativeQuery("DROP TABLE IF EXISTS user", User.class);
             sqlQuery.addEntity(User.class);
             sqlQuery.executeUpdate();
             session.getTransaction().commit();
@@ -66,7 +65,7 @@ public class UserDaoHibernateImpl implements UserDao {
             System.out.println("User c именем - " + name + " добавлен в базу данных");
         } catch (Exception e) {
             if (session.getTransaction() != null) session.getTransaction().rollback();
-                e.printStackTrace();
+            e.printStackTrace();
         } finally {
             session.close();
         }
@@ -77,12 +76,12 @@ public class UserDaoHibernateImpl implements UserDao {
         session = sessionFactory.getCurrentSession();
         try {
             session.beginTransaction();
-            User user = session.get(User.class,id);
+            User user = session.get(User.class, id);
             session.delete(user);
             session.getTransaction().commit();
         } catch (Exception e) {
             if (session.getTransaction() != null) session.getTransaction().rollback();
-                e.printStackTrace();
+            e.printStackTrace();
         } finally {
             session.close();
         }
@@ -97,13 +96,13 @@ public class UserDaoHibernateImpl implements UserDao {
             NativeQuery sqlQuery = session.createNativeQuery("SELECT  * from user");
             sqlQuery.addEntity(User.class);
             userList = sqlQuery.list();
-            for (Iterator iterator = userList.iterator(); iterator.hasNext();) {
+            for (Iterator iterator = userList.iterator(); iterator.hasNext(); ) {
                 User user = (User) iterator.next();
                 System.out.println(user.toString());
             }
             session.getTransaction().commit();
         } catch (Exception e) {
-            if(session.getTransaction() != null) session.getTransaction().rollback();
+            if (session.getTransaction() != null) session.getTransaction().rollback();
             e.printStackTrace();
         } finally {
             session.close();
@@ -121,7 +120,7 @@ public class UserDaoHibernateImpl implements UserDao {
             sqlQuery.executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
-            if(session.getTransaction() != null) session.getTransaction().rollback();
+            if (session.getTransaction() != null) session.getTransaction().rollback();
             e.printStackTrace();
         } finally {
             session.close();

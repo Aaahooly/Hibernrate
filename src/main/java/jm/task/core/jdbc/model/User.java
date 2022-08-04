@@ -1,9 +1,7 @@
 package jm.task.core.jdbc.model;
 
-
 import javax.persistence.*;
 import java.io.Serializable;
-
 
 @Table(name = "user")
 @Entity
@@ -21,7 +19,10 @@ public class User implements Serializable {
     @Column
     private Byte age;
 
-    public User(){};
+    public User() {
+    }
+
+    ;
 
     @Override
     public String toString() {

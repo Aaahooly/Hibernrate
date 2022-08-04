@@ -2,6 +2,7 @@ package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +12,7 @@ import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
     Util util = new Util();
+
     public UserDaoJDBCImpl() {
 
     }
