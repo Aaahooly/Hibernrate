@@ -6,9 +6,7 @@ import jm.task.core.jdbc.util.Util;
 import org.hibernate.*;
 import org.hibernate.query.NativeQuery;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.sql.SQLException;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
@@ -26,8 +24,9 @@ public class UserDaoHibernateImpl implements UserDao {
         session = sessionFactory.getCurrentSession();
         try {
             session.beginTransaction();
-            SQLQuery sqlQuery = session.createSQLQuery("CREATE TABLE IF NOT EXISTS user (id BIGINT NOT NULL AUTO_INCREMENT, name VARCHAR(30) NOT NULL, lastName VARCHAR(30) NOT NULL, age SMALLINT NOT NULL,PRIMARY KEY(id))");
+            NativeQuery sqlQuery = session.createNativeQuery("CREATE TABLE IF NOT EXISTS user (id BIGINT NOT NULL AUTO_INCREMENT, name VARCHAR(30) NOT NULL, lastName VARCHAR(30) NOT NULL, age SMALLINT NOT NULL,PRIMARY KEY(id))", User.class);
             sqlQuery.addEntity(User.class);
+            sqlQuery.executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
             if (session.getTransaction() != null) {
@@ -45,8 +44,9 @@ public class UserDaoHibernateImpl implements UserDao {
         session = sessionFactory.getCurrentSession();
         try {
             session.beginTransaction();
-            NativeQuery sqlQuery = session.createNativeQuery("DROP TABLE IF EXISTS user");
-            sqlQuery.addEntity("user",User.class);
+            NativeQuery sqlQuery = session.createNativeQuery("DROP TABLE IF EXISTS user",User.class);
+            sqlQuery.addEntity(User.class);
+            sqlQuery.executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
             if (session.getTransaction() != null) session.getTransaction().rollback();
@@ -63,7 +63,7 @@ public class UserDaoHibernateImpl implements UserDao {
             session.beginTransaction();
             session.save(new User(name, lastName, age));
             session.getTransaction().commit();
-            System.out.println("User c именем " + name + " добавлен в базу данных");
+            System.out.println("User c именем - " + name + " добавлен в базу данных");
         } catch (Exception e) {
             if (session.getTransaction() != null) session.getTransaction().rollback();
                 e.printStackTrace();
@@ -85,7 +85,6 @@ public class UserDaoHibernateImpl implements UserDao {
                 e.printStackTrace();
         } finally {
             session.close();
-            sessionFactory.close();
         }
     }
 
@@ -96,7 +95,12 @@ public class UserDaoHibernateImpl implements UserDao {
         try {
             session.beginTransaction();
             NativeQuery sqlQuery = session.createNativeQuery("SELECT  * from user");
-            userList = sqlQuery.getResultList();
+            sqlQuery.addEntity(User.class);
+            userList = sqlQuery.list();
+            for (Iterator iterator = userList.iterator(); iterator.hasNext();) {
+                User user = (User) iterator.next();
+                System.out.println(user.toString());
+            }
             session.getTransaction().commit();
         } catch (Exception e) {
             if(session.getTransaction() != null) session.getTransaction().rollback();
@@ -109,6 +113,18 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
-
+        session = sessionFactory.getCurrentSession();
+        try {
+            session.beginTransaction();
+            NativeQuery sqlQuery = session.createNativeQuery("delete from user");
+            sqlQuery.addEntity(User.class);
+            sqlQuery.executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            if(session.getTransaction() != null) session.getTransaction().rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
     }
 }

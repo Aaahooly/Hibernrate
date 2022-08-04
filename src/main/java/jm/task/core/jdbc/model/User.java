@@ -22,8 +22,6 @@ public class User implements Serializable {
     private Byte age;
 
     public User(){};
-//    public User(String andrey, String glukhov, int age) {
-//   }
 
     @Override
     public String toString() {
